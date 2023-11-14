@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container{
+            background: linear-gradient(240deg, rgb(85, 85, 215) 0%, rgb(33, 33, 151)100%);
+            padding: 50px 30px;
+            min-height:100vh;
+        }
+        .container h1{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            padding-bottom: 20px;
+        }
+        .container img{
+            width: 50px;
+        }
+        .container button{
+            display: flex;
+            width: 150px;
+            border-radius: 30px;
+            background-color: rgb(58, 151, 58);
+            color: rgb(255, 255, 255);
+            font-size: 16px;
+            margin-bottom: 50px;
+            padding: 10px 20px;
+            outline: 0;
+            border: 0;
+            cursor: pointer;
+            align-items: center;
+            font-weight: 700;
+        }
+        .container button img{
+            width: 25px;
+            margin-right: 8px;
+        }
+        .input-box{
+            max-width: 500px;
+            min-height: 200px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(141, 138, 138);
+            padding: 20px;
+            border-radius: 30px;
+            outline: none;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .input-box img{
+            position: absolute;
+            right: 40px;
+            top: 150px;
+            width: 25px;
+            cursor: pointer;
+            
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><img src="pencil.png" alt="notes image">Notes</h1>
+        <button class="btn"><img src="pencil (1).png" alt="pencil image">Create Notes</button>
+        <div class="notes-container">
+            <!-- <p contenteditable="true" class="input-box">dfghjklkjhgfdfgh<img src="bin.png" alt="trash-can-image"></p> -->
+        </div>
+    </div>
+</body>
+<script>
+    const button = document.querySelector(".btn");
+    const notesContainer = document.querySelector(".notes-container");
+    let notes = document.querySelectorAll(".input-box");
+
+    // save the app in the internal storage such that if we refresh the site, it wont be lost.
+    function saveContent(){
+        localStorage.setItem("info", notesContainer.innerHTML);
+    }
+
+    function showContent(){
+        notesContainer.innerHTML = localStorage.getItem("info");
+    }
+    showContent()
+
+    // when you click on the button, a new paragraph should appear
+    button.addEventListener("click",() => {
+        let inputBox = document.createElement("p");
+        let img = document.createElement("img");
+        inputBox.className = "input-box";
+        inputBox.setAttribute("contenteditable", "true");
+        img.src = "bin.png";
+        notesContainer.appendChild(inputBox).appendChild(img);
+        saveContent();
+    })
+    
+
+    // when you click on the trash can, the whole p tag should disappear
+    notesContainer.addEventListener("click",(e)=>{
+        if(e.target.tagName === "IMG"){
+            e.target.parentElement.remove();
+            saveContent()
+        }else if(e.target.tagName === "P"){
+            notes = document.querySelectorAll(".input-box");
+            notes.forEach(note => {
+                note.onkeyup = function(){
+                    saveContent();
+                }
+            })
+        }
+    })
+    
+    // when you click the enter key, a line break should be created instead of creating a new paragraph
+
+    document.addEventListener("keydown", event =>{
+        if(event.key === "Enter"){
+            document.execCommand("insertLineBreak");
+            event.preventDefault();
+        }
+    })
+    
+
+
+</script>
+</html>
